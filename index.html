@@ -354,6 +354,13 @@
             border-radius: 4px;
             overflow: hidden;
             border: 1px solid #e8e8e8;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .process-diagram-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+            transform: translateY(-2px);
         }
 
         .process-diagram-card img {
@@ -362,6 +369,62 @@
             object-fit: contain;
             padding: 12px;
             background: var(--white);
+        }
+
+        /* Image lightbox modal */
+        .image-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        .image-modal-overlay.active {
+            display: flex;
+        }
+
+        .image-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .image-modal-content img {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 6px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+        }
+
+        .image-modal-caption {
+            text-align: center;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .image-modal-close {
+            position: fixed;
+            top: 20px;
+            right: 28px;
+            color: #fff;
+            font-size: 36px;
+            cursor: pointer;
+            z-index: 10000;
+            line-height: 1;
+            font-weight: 300;
+            transition: opacity 0.2s;
+        }
+
+        .image-modal-close:hover {
+            opacity: 0.7;
         }
 
         .process-diagram-card .diagram-label {
@@ -1303,6 +1366,49 @@
             <span>AdvancTEK&copy; 2026 All rights reserved &mdash; <a href="#">Privacy Policy</a> &mdash; A CVG Brand</span>
         </div>
     </footer>
+
+    <!-- Image Lightbox Modal -->
+    <div class="image-modal-overlay" id="imageModal">
+        <span class="image-modal-close" id="imageModalClose">&times;</span>
+        <div class="image-modal-content">
+            <img id="imageModalImg" src="" alt="">
+            <div class="image-modal-caption" id="imageModalCaption"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('imageModalImg');
+            const modalCaption = document.getElementById('imageModalCaption');
+            const modalClose = document.getElementById('imageModalClose');
+
+            document.querySelectorAll('.process-diagram-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    var img = card.querySelector('img');
+                    var label = card.querySelector('.diagram-label');
+                    modalImg.src = img.src;
+                    modalImg.alt = img.alt;
+                    modalCaption.textContent = label ? label.textContent : '';
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            function closeModal() {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+        })();
+    </script>
 
 </body>
 </html>
